@@ -16,11 +16,25 @@ const Stars = (props) => {
 }
 
 const Button = (props) => {
-    return (
-        <div className="col-2">
-            <button>=</button>
-        </div>
-    );
+    let button;
+
+    switch (props.answerIsCorrect) {
+
+        case true:
+...
+break;
+case false:
+...
+break;
+default:
+...
+break;
+}
+return (
+    <div className="col-2">
+        <button className="btn btn-primary" disabled={props.selectedNumbers.length === 0}>=</button>
+    </div>
+);
 }
 
 const Answer = (props) => {
@@ -61,6 +75,7 @@ class Game extends React.Component {
     state = {
         selectedNumbers: [],
         randomNumberOfStars: 1 + Math.floor(Math.random() * 9),
+        answerIsCorrect: null
     };
 
     selectNumber = (clickedNumber) => {
@@ -77,19 +92,27 @@ class Game extends React.Component {
             selectedNumbers: prevState.selectedNumbers.filter(number => number !== clickedNumber)
         }))
     }
+
+    checkAnswer = () => {
+        this.setState(prevState => ({
+            answerIsCorrect: prevState.randomNumberOfStars === prevState.selectedNumbers.reduce((acc, n) => acc + n, 0)
+        }))
+    }
     render() {
+
+        const { selectedNumbers, randomNumberOfStars, answerIsCorrect } = this.state
         return (
             <div className="container">
                 <h3>Play Nine</h3>
                 <hr />
                 <div className="row">
-                    <Stars numberOfStars={this.state.randomNumberOfStars} />
-                    <Button />
-                    <Answer selectedNumbers={this.state.selectedNumbers}
+                    <Stars numberOfStars={randomNumberOfStars} />
+                    <Button selectedNumbers={selectedNumbers} checkAnswer={this.checkAnswer} answerIsCorrect={answerIsCorrect} />
+                    <Answer selectedNumbers={selectedNumbers}
                         unselectNumber={this.unselectNumber} />
                 </div>
                 <br />
-                <Numbers selectedNumbers={this.state.selectedNumbers}
+                <Numbers selectedNumbers={selectedNumbers}
                     selectNumber={this.selectNumber} />
             </div>
         )
